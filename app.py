@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import sys
+import math
 
 from torch.nn import functional as F
 
@@ -160,34 +161,85 @@ def ask_name():
         c = int(c)
         context = torch.cat([context, torch.Tensor([[c]]).to(device)], dim=1)
     
-    logits, _ = m(context.int())
-    logits = logits[-1,-1] 
-    d = logits.argmax()
+    white_o = {0,1,2,3,4,5,6,7,8,9,10,11,12}
+    red_o = {21,22,23,24,25,26,27,28,29,30,31,32}
+
+    k=0
+    i=0
+    c = context
+    quantos_33 = 0
     
-    context = torch.cat([context, torch.Tensor([[d]]).to(device)], dim=1)
+    while i-quantos_33<4 and not(i==6 and quantos_33==2):
 
-    logits, _ = m(context.int())
-    logits = logits[-1,-1] 
-    e = logits.argmax()
+      logits, _ = m(c.int())
+      logits = logits[-1,-1] # becomes (C)
+      _, b = torch.topk(logits, k+1)
+      print(torch.topk(logits, k+1))
+      b = b[k]
+      print(i,"antes: ",b,c,white_o,red_o)
 
-    context = torch.cat([context, torch.Tensor([[e]]).to(device)], dim=1)
+      if b==33:
+       d = torch.cat([c, torch.Tensor([[33]]).to(device)], dim=1)
+       l, _ = m(d.int())
+       l = l[-1,-1] # (C)
+       b = l.argmax()
 
-    if e==33:
-        logits, _ = m(context.int())
-        logits = logits[-1,-1] 
-        f = logits.argmax()
-        context = torch.cat([context, torch.Tensor([[f]]).to(device)], dim=1)
+       if (c[0,-1].item()+b.item())%16 < 8:
+        middle = math.floor((c[0,-1].item()+b.item())/2)
+       else:
+         middle = math.ceil((c[0,-1].item()+b.item())/2)
+       # False False True False True 11 True False 16.0
 
-        logits, _ = m(context.int())
-        logits = logits[-1,-1] 
-        g = logits.argmax()
-        context = torch.cat([context, torch.Tensor([[g]]).to(device)], dim=1)
-            
-        if g==33:
-            logits, _ = m(context.int())
-            logits = logits[-1,-1] 
-            h = logits.argmax()
-            context = torch.cat([context, torch.Tensor([[h]]).to(device)], dim=1)        
+       print( b.item()<c[0,-1].item()-7,b.item(),c[0,-1].item())   #bool(middle in white_o) == bool(c[0,-1].item() in white_o), middle in white_o.union(red_o),middle,middle in white_o, c[0,-1].item() in white_o, c[0,-1].item())
+       if (not (b.item() in white_o.union(red_o) or b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9 or (bool(middle in white_o) == bool(c[0,-1].item() in white_o)))) and middle in white_o.union(red_o):
+          print("else:",b.item(),white_o.union(red_o),c[0,-1].item(),"comer",middle)
+          if (c[0,-1].item() in white_o):
+            red_o.remove(middle)
+            white_o.remove(c[0,-1].item())
+            white_o.add(b.item())
+          if (c[0,-1].item() in red_o):
+            white_o.remove(middle)
+            red_o.remove(c[0,-1].item())
+            red_o.add(b.item())
+          print (i,"TWO",c[0,-2],c[0,-1])
+          if i%2 == 1:
+            i+=1
+          else:
+            i+=2
+          c = torch.cat([c, torch.Tensor([[33,b.item()]]).to(device)], dim=1)
+          print (i,"TWO depois",c[0,-2],c[0,-1])
+          quantos_33 += 1
+          continue
+       print("NOT else:",b.item(),white_o.union(red_o),c,middle)
+
+      if i%2 == 1:
+       print("i%2 == 1")
+       if b.item() in white_o.union(red_o) or abs(b.item() - c[0,-1].item())<3 or abs(b.item() - c[0,-1].item())>5:   #b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9:
+        if k>3 and c[0,-2].item() != 33:
+          c = c[:, :-1]
+          i-=1
+          k = 1
+          continue
+        else:
+          k+=1
+          continue
+       else:
+        if (c[0,-1].item() in white_o):
+            white_o.remove(c[0,-1].item())
+            white_o.add(b.item())
+        if (c[0,-1].item() in red_o):
+            red_o.remove(c[0,-1].item())
+            red_o.add(b.item())
+
+      if i%2 == 0 and i>0 and b.item() not in white_o.union(red_o):
+        print("i%2 == 0 and i>0 and b.item() not in white_o.union(red_o)", b.item())
+        k+=1
+        continue
+
+      c = torch.cat([c, torch.Tensor([[b.item()]]).to(device)], dim=1)
+      print ("depois: ",b,c,white_o,red_o)
+      k=0
+      i+=1
 
     
     print("Cooontext:",context, flush=True)  # Force immediate flushing
