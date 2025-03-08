@@ -244,7 +244,7 @@ def ask_name():
         continue
 
       c = torch.cat([c, torch.Tensor([[b.item()]]).to(device)], dim=1)
-      print ("depois: ",b,c,white_o,red_o, flush=True)  # Force immediate flushing
+      print ("depois: ",b,c,white_o,red_o,i,k,quantos_33, flush=True)  # Force immediate flushing
       sys.stdout.flush()
       k=0
       i+=1
