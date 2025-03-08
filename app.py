@@ -176,7 +176,8 @@ def ask_name():
       _, b = torch.topk(logits, k+1)
       print(torch.topk(logits, k+1))
       b = b[k]
-      print(i,"antes: ",b,c,white_o,red_o)
+      print(i,"antes: ",b,c,white_o,red_o, flush=True)  # Force immediate flushing
+      sys.stdout.flush()
 
       if b==33:
        d = torch.cat([c, torch.Tensor([[33]]).to(device)], dim=1)
@@ -190,9 +191,11 @@ def ask_name():
          middle = math.ceil((c[0,-1].item()+b.item())/2)
        # False False True False True 11 True False 16.0
 
-       print( b.item()<c[0,-1].item()-7,b.item(),c[0,-1].item())   #bool(middle in white_o) == bool(c[0,-1].item() in white_o), middle in white_o.union(red_o),middle,middle in white_o, c[0,-1].item() in white_o, c[0,-1].item())
+       print( b.item()<c[0,-1].item()-7,b.item(),c[0,-1].item(), flush=True)  # Force immediate flushing
+       sys.stdout.flush()   #bool(middle in white_o) == bool(c[0,-1].item() in white_o), middle in white_o.union(red_o),middle,middle in white_o, c[0,-1].item() in white_o, c[0,-1].item())
        if (not (b.item() in white_o.union(red_o) or b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9 or (bool(middle in white_o) == bool(c[0,-1].item() in white_o)))) and middle in white_o.union(red_o):
-          print("else:",b.item(),white_o.union(red_o),c[0,-1].item(),"comer",middle)
+          print("else:",b.item(),white_o.union(red_o),c[0,-1].item(),"comer",middle, flush=True)  # Force immediate flushing
+          sys.stdout.flush()
           if (c[0,-1].item() in white_o):
             red_o.remove(middle)
             white_o.remove(c[0,-1].item())
@@ -201,16 +204,19 @@ def ask_name():
             white_o.remove(middle)
             red_o.remove(c[0,-1].item())
             red_o.add(b.item())
-          print (i,"TWO",c[0,-2],c[0,-1])
+          print (i,"TWO",c[0,-2],c[0,-1], flush=True)  # Force immediate flushing
+          sys.stdout.flush()
           if i%2 == 1:
             i+=1
           else:
             i+=2
           c = torch.cat([c, torch.Tensor([[33,b.item()]]).to(device)], dim=1)
-          print (i,"TWO depois",c[0,-2],c[0,-1])
+          print (i,"TWO depois",c[0,-2],c[0,-1], flush=True)  # Force immediate flushing
+          sys.stdout.flush()
           quantos_33 += 1
           continue
-       print("NOT else:",b.item(),white_o.union(red_o),c,middle)
+       print("NOT else:",b.item(),white_o.union(red_o),c,middle, flush=True)  # Force immediate flushing
+       sys.stdout.flush()
 
       if i%2 == 1:
        print("i%2 == 1")
@@ -232,12 +238,14 @@ def ask_name():
             red_o.add(b.item())
 
       if i%2 == 0 and i>0 and b.item() not in white_o.union(red_o):
-        print("i%2 == 0 and i>0 and b.item() not in white_o.union(red_o)", b.item())
+        print("i%2 == 0 and i>0 and b.item() not in white_o.union(red_o)", b.item(), flush=True)  # Force immediate flushing
+        sys.stdout.flush()
         k+=1
         continue
 
       c = torch.cat([c, torch.Tensor([[b.item()]]).to(device)], dim=1)
-      print ("depois: ",b,c,white_o,red_o)
+      print ("depois: ",b,c,white_o,red_o, flush=True)  # Force immediate flushing
+      sys.stdout.flush()
       k=0
       i+=1
 
