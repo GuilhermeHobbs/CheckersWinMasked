@@ -169,7 +169,7 @@ def ask_name():
     c = context
     quantos_33 = 0
     
-    while i-quantos_33<4 and not(i==6 and quantos_33==2):
+    while i-quantos_33<2 and not(i==5 and quantos_33==2):
 
       logits, _ = m(c.int())
       logits = logits[-1,-1] # becomes (C)
