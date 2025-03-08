@@ -131,7 +131,7 @@ class BigramLanguageModel(nn.Module):
 model = BigramLanguageModel()
 m = model.to(device)
 
-m.load_state_dict(torch.load('winMINI(1).pth', map_location=torch.device('cpu')))
+m.load_state_dict(torch.load('winMINI.pth', map_location=torch.device('cpu')))
 
 model.eval()  # Disable dropout
 
