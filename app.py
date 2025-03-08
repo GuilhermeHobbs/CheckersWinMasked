@@ -250,15 +250,17 @@ def ask_name():
       i+=1
 
     
-    print("Cooontext:",context, flush=True)  # Force immediate flushing
+    print("Cooontext:",c, flush=True)  # Force immediate flushing
     sys.stdout.flush()
     
-    if e==33 and g==33:
-        return str(d.item())+"-33-"+str(f.item())+"-33-"+str(h.item())
-    elif e==33:
-        return str(d.item())+"-33-"+str(f.item())
+    if i==2:
+        return c[0,-2]+"-"+c[0,-1]
+    if i==3:
+        return c[0,-3]+"-33-"+c[0,-1]
+    if i==5:
+        return c[0,-5]+"-33-"+c[0,-3]+"-33-"+c[0,-1] 
     else:
-        return str(d.item())+"-"+str(e.item())
+        print("ERROR:",i,c)
 
 
 if __name__ == '__main__':
