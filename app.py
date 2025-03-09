@@ -159,8 +159,10 @@ def ask_name():
     b = int(b)   
  
     context = torch.cat([context, torch.Tensor([[a,b]]).to(device)], dim=1)
-    print(red_o)
-    print(white_o)
+    print(red_o, flush=True)  # Force immediate flushing
+    sys.stdout.flush()
+    print(white_o, flush=True)  # Force immediate flushing
+    sys.stdout.flush()
     if c != '':
         c = int(c)
         context = torch.cat([context, torch.Tensor([[c]]).to(device)], dim=1)
