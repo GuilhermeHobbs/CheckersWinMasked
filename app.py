@@ -254,11 +254,11 @@ def ask_name():
     sys.stdout.flush()
     
     if i==2:
-        return c[0,-2].item()+"-"+c[0,-1].item()  #
+        return str(c[0,-2].item())+"-"+str(c[0,-1].item())  
     if i==3:
-        return c[0,-3].item()+"-33-"+c[0,-1].item()
+        return str(c[0,-3].item())+"-33-"+str(c[0,-1].item())
     if i==5:
-        return c[0,-5].item()+"-33-"+c[0,-3].item()+"-33-"+c[0,-1].item() 
+        return str(c[0,-5].item())+"-33-"+str(c[0,-3].item())+"-33-"+str(c[0,-1].item()) 
     else:
         print("ERROR:",i,c)
 
