@@ -172,7 +172,7 @@ def ask_name():
         else:
              middle = math.ceil((a+c)/2)
         
-        red_o.remove(middle)
+        white_o.remove(middle)
         red_o.add(c)
     else:
        red_o.add(b) 
