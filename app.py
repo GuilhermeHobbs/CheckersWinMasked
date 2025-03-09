@@ -166,63 +166,62 @@ def ask_name():
 
     k=0
     i=0
-    c = context
     quantos_33 = 0
     
     while i-quantos_33<2 and not(i==5 and quantos_33==2):
 
-      logits, _ = m(c.int())
-      logits = logits[-1,-1] # becomes (C)
+      logits, _ = m(context.int())
+      logits = logits[-1,-1] 
       _, b = torch.topk(logits, k+1)
       print(torch.topk(logits, k+1))
       b = b[k]
-      print(i,"antes: ",b,c,white_o,red_o, flush=True)  # Force immediate flushing
+      print(i,"antes: ",b,context,white_o,red_o, flush=True)  # Force immediate flushing
       sys.stdout.flush()
 
       if b==33:
-       d = torch.cat([c, torch.Tensor([[33]]).to(device)], dim=1)
+       d = torch.cat([context, torch.Tensor([[33]]).to(device)], dim=1)
        l, _ = m(d.int())
-       l = l[-1,-1] # (C)
+       l = l[-1,-1] 
        b = l.argmax()
 
-       if (c[0,-1].item()+b.item())%16 < 8:
-        middle = math.floor((c[0,-1].item()+b.item())/2)
+       if (context[0,-1].item()+b.item())%16 < 8:
+        middle = math.floor((context[0,-1].item()+b.item())/2)
        else:
-         middle = math.ceil((c[0,-1].item()+b.item())/2)
+         middle = math.ceil((context[0,-1].item()+b.item())/2)
        # False False True False True 11 True False 16.0
 
-       print( b.item()<c[0,-1].item()-7,b.item(),c[0,-1].item(), flush=True)  # Force immediate flushing
+       print( b.item()<context[0,-1].item()-7,b.item(),context[0,-1].item(), flush=True)  # Force immediate flushing
        sys.stdout.flush()   #bool(middle in white_o) == bool(c[0,-1].item() in white_o), middle in white_o.union(red_o),middle,middle in white_o, c[0,-1].item() in white_o, c[0,-1].item())
-       if (not (b.item() in white_o.union(red_o) or b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9 or (bool(middle in white_o) == bool(c[0,-1].item() in white_o)))) and middle in white_o.union(red_o):
-          print("else:",b.item(),white_o.union(red_o),c[0,-1].item(),"comer",middle, flush=True)  # Force immediate flushing
+       if (not (b.item() in white_o.union(red_o) or b.item()>context[0,-1].item()+9 or b.item()<context[0,-1].item()-9 or (bool(middle in white_o) == bool(context[0,-1].item() in white_o)))) and middle in white_o.union(red_o):
+          print("else:",b.item(),white_o.union(red_o),context[0,-1].item(),"comer",middle, flush=True)  # Force immediate flushing
           sys.stdout.flush()
-          if (c[0,-1].item() in white_o):
+          if (context[0,-1].item() in white_o):
             red_o.remove(middle)
-            white_o.remove(c[0,-1].item())
+            white_o.remove(context[0,-1].item())
             white_o.add(b.item())
-          if (c[0,-1].item() in red_o):
+          if (context[0,-1].item() in red_o):
             white_o.remove(middle)
-            red_o.remove(c[0,-1].item())
+            red_o.remove(context[0,-1].item())
             red_o.add(b.item())
-          print (i,"TWO",c[0,-2],c[0,-1], flush=True)  # Force immediate flushing
+          print (i,"TWO",context[0,-2],context[0,-1], flush=True)  # Force immediate flushing
           sys.stdout.flush()
           if i%2 == 1:
             i+=1
           else:
             i+=2
-          c = torch.cat([c, torch.Tensor([[33,b.item()]]).to(device)], dim=1)
-          print (i,"TWO depois",c[0,-2],c[0,-1], flush=True)  # Force immediate flushing
+          context = torch.cat([context, torch.Tensor([[33,b.item()]]).to(device)], dim=1)
+          print (i,"TWO depois",context[0,-2],context[0,-1], flush=True)  # Force immediate flushing
           sys.stdout.flush()
           quantos_33 += 1
           continue
-       print("NOT else:",b.item(),white_o.union(red_o),c,middle, flush=True)  # Force immediate flushing
+       print("NOT else:",b.item(),white_o.union(red_o),context,middle, flush=True)  # Force immediate flushing
        sys.stdout.flush()
 
       if i%2 == 1:
        print("i%2 == 1")
-       if b.item() in white_o.union(red_o) or abs(b.item() - c[0,-1].item())<3 or abs(b.item() - c[0,-1].item())>5:   #b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9:
-        if k>3 and c[0,-2].item() != 33:
-          c = c[:, :-1]
+       if b.item() in white_o.union(red_o) or abs(b.item() - context[0,-1].item())<3 or abs(b.item() - context[0,-1].item())>5:   #b.item()>c[0,-1].item()+9 or b.item()<c[0,-1].item()-9:
+        if k>3 and context[0,-2].item() != 33:
+          context = context[:, :-1]
           i-=1
           k = 1
           continue
@@ -230,11 +229,11 @@ def ask_name():
           k+=1
           continue
        else:
-        if (c[0,-1].item() in white_o):
-            white_o.remove(c[0,-1].item())
+        if (context[0,-1].item() in white_o):
+            white_o.remove(context[0,-1].item())
             white_o.add(b.item())
-        if (c[0,-1].item() in red_o):
-            red_o.remove(c[0,-1].item())
+        if (context[0,-1].item() in red_o):
+            red_o.remove(context[0,-1].item())
             red_o.add(b.item())
 
       if i%2 == 0 and i>0 and b.item() not in white_o.union(red_o):
@@ -243,24 +242,24 @@ def ask_name():
         k+=1
         continue
 
-      c = torch.cat([c, torch.Tensor([[b.item()]]).to(device)], dim=1)
-      print ("depois: ",b,c,white_o,red_o,i,k,quantos_33, flush=True)  # Force immediate flushing
+      context = torch.cat([context, torch.Tensor([[b.item()]]).to(device)], dim=1)
+      print ("depois: ",b,context,white_o,red_o,i,k,quantos_33, flush=True)  # Force immediate flushing
       sys.stdout.flush()
       k=0
       i+=1
 
     
-    print("Cooontext:",c, flush=True)  # Force immediate flushing
+    print("Cooontext:",context, flush=True)  # Force immediate flushing
     sys.stdout.flush()
     
     if i==2:
-        return str(c[0,-2].item())+"-"+str(c[0,-1].item())  
+        return str(context[0,-2].item())+"-"+str(context[0,-1].item())  
     if i==3:
-        return str(c[0,-3].item())+"-33-"+str(c[0,-1].item())
+        return str(context[0,-3].item())+"-33-"+str(context[0,-1].item())
     if i==5:
-        return str(c[0,-5].item())+"-33-"+str(c[0,-3].item())+"-33-"+str(c[0,-1].item()) 
+        return str(context[0,-5].item())+"-33-"+str(context[0,-3].item())+"-33-"+str(context[0,-1].item()) 
     else:
-        print("ERROR:",i,c)
+        print("ERROR:",i,context)
 
 
 if __name__ == '__main__':
