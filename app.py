@@ -248,6 +248,7 @@ def ask_name():
             red_o.add(b.item())
 
       if i%2 == 0 and quantos_33 == 1 and b.item() != 33:
+          i+=1
           print("BREAK",i,b)
           break  
         
