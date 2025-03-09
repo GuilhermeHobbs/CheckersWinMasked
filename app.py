@@ -153,6 +153,8 @@ def ask_name():
     a = int(a)
     if a==0:
         context = torch.Tensor([[0]]).int().to(device)
+        red_o = {0,1,2,3,4,5,6,7,8,9,10,11,12}
+        white_o = {21,22,23,24,25,26,27,28,29,30,31,32}
         return ""
     print(red_o,a)
     red_o.remove(a)
