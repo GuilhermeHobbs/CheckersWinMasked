@@ -284,7 +284,8 @@ def ask_name():
     if i==5:
         return str(context[0,-5].item())+"-33-"+str(context[0,-3].item())+"-33-"+str(context[0,-1].item()) 
     else:
-        print("ERROR:",i,context)
+        print("ERROR:",i,context, flush=True)  # Force immediate flushing
+        sys.stdout.flush()
 
 
 if __name__ == '__main__':
