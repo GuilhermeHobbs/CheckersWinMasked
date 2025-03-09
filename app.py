@@ -154,6 +154,7 @@ def ask_name():
     if a==0:
         context = torch.Tensor([[0]]).int().to(device)
         return ""
+    print(red_o,a)
     red_o.remove(a)
     
     b = int(b)   
