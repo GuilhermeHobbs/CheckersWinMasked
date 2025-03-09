@@ -138,13 +138,14 @@ model.eval()  # Disable dropout
 
 context = torch.Tensor([[0]]).int().to(device)  
 
-print("antess")
+white_o = {0,1,2,3,4,5,6,7,8,9,10,11,12}
+red_o = {21,22,23,24,25,26,27,28,29,30,31,32}
+
 
 @app.route('/move')
 def ask_name():
-    global context
-    global m
-    
+    global m,context,white_o,red_o
+     
     a = request.args.get('a', '')  
     b = request.args.get('b', '')
     c = request.args.get('c', '')
@@ -153,17 +154,25 @@ def ask_name():
     if a==0:
         context = torch.Tensor([[0]]).int().to(device)
         return ""
-        
+    red_o.remove(a)
+    
     b = int(b)   
  
     context = torch.cat([context, torch.Tensor([[a,b]]).to(device)], dim=1)
     if c != '':
         c = int(c)
         context = torch.cat([context, torch.Tensor([[c]]).to(device)], dim=1)
-    
-    white_o = {0,1,2,3,4,5,6,7,8,9,10,11,12}
-    red_o = {21,22,23,24,25,26,27,28,29,30,31,32}
 
+        if (a+c)%16 < 8:
+             middle = math.floor((a+c)/2)
+        else:
+             middle = math.ceil((a+c)/2)
+        
+        red_o.remove(middle)
+        red_o.add(c)
+    else:
+       red_o.add(b) 
+    
     k=0
     i=0
     quantos_33 = 0
