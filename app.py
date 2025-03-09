@@ -259,7 +259,7 @@ def ask_name():
           print("BREAK",i,b)
           break  
         
-      if i%2 == 0 and b.item() not in white_o.union(red_o):
+      if i%2 == 0 and b.item() not in white_o:                       #white_o.union(red_o):
         print("i%2 == 0 and i>0 and b.item() not in white_o.union(red_o)", b.item(), flush=True)  # Force immediate flushing
         sys.stdout.flush()
         k+=1
